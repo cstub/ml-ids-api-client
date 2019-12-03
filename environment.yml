@@ -1,0 +1,20 @@
+name: ml-ids-api-client
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - boto3=1.10.30
+  - click=7.0=py37_0
+  - numpy=1.17.2=py37h95a1406_0
+  - pandas=0.25.2=py37hb3f55d8_0
+  - pip=19.2.3=py37_0
+  - pytest=5.2.1=py37_0
+  - pytest-runner=5.1=py_0
+  - python=3.7.3=h33d41f4_1
+  - requests=2.22.0
+  - setuptools=41.6.0=py37_1
+  - tabulate=0.8.6
+  - pip:
+    - h5py==2.10.0
+    - tables==3.6.1
