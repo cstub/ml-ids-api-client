@@ -1,7 +1,8 @@
 import click
 from time import sleep
 
-from ml_ids_api_client.data import load_dataset, get_categories, select_samples, merge_predictions
+from ml_ids_api_client.dataset import load_dataset
+from ml_ids_api_client.data import get_categories, select_samples, merge_predictions
 from ml_ids_api_client.user_interaction import prompt_for_selection, show_prediction_results
 from ml_ids_api_client.http_client import call_predict_api
 
@@ -13,7 +14,9 @@ from ml_ids_api_client.http_client import call_predict_api
               help='URL of the prediction API server.')
 @click.option('--s3-local-storage-path', type=click.Path(), default='../output/s3_dataset.h5',
               help='Local path used to store the downloaded dataset from S3.')
-def run_client(dataset_uri, api_url, s3_local_storage_path):
+@click.option('--display-overflow', type=click.Choice(['WRAP', 'NOWRAP'], case_sensitive=False),
+              default='WRAP', help='Defines the overflow behaviour if the output exceeds the window width.')
+def run_client(dataset_uri, api_url, s3_local_storage_path, display_overflow):
     click.echo('Loading dataset...')
     dataset = load_dataset(dataset_uri, s3_local_storage_path)
     categories = get_categories(dataset)
@@ -39,7 +42,7 @@ def run_client(dataset_uri, api_url, s3_local_storage_path):
                 sleep(selection.delay / 1000)
 
         results, acc = merge_predictions(samples, predictions)
-        show_prediction_results(results, acc)
+        show_prediction_results(results, acc, display_overflow)
 
 
 if __name__ == '__main__':

@@ -16,5 +16,10 @@ setup(
     install_requires=[
     ],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest']
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'ml_ids_rest_client=ml_ids_api_client.rest_client:run_client'
+        ]
+    }
 )
