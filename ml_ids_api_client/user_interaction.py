@@ -7,6 +7,9 @@ from typing import Dict, Union, Optional, Callable
 QUIT_CHAR = 'q'
 RANDOM_CHAR = 'r'
 
+pd.set_option('display.max_columns', 100)
+pd.set_option('display.max_rows', 1000)
+
 
 def prompt_for_selection(categories: Dict[int, str]) -> Optional[Union[Selection, RandomSelection]]:
     cat = prompt_for_category_selection(categories)
@@ -92,11 +95,15 @@ def prompt(prompt_msg: str, invalid_msg: str, text: str, is_valid_fn: Callable[[
         click.echo(invalid_msg)
 
 
-def show_prediction_results(result_df: pd.DataFrame, accuracy: float) -> None:
+def show_prediction_results(result_df: pd.DataFrame, accuracy: float, display_overflow: str) -> None:
+    click.echo()
     click.echo('Prediction Results:')
     click.echo('===================')
     click.echo('Accuracy: {:.2f}%'.format(accuracy))
     click.echo('\nDetails:')
     click.echo('--------')
-    click.echo(tabulate(result_df, headers='keys', showindex=False))
+    if display_overflow == 'WRAP':
+        click.echo(result_df.reset_index(drop=True))
+    else:
+        click.echo(tabulate(result_df, headers='keys', showindex=False))
     click.echo()

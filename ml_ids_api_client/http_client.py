@@ -21,4 +21,4 @@ def call_predict_api(url: str, data: pd.DataFrame) -> List[float]:
         response.raise_for_status()
         return response.json()
     except HTTPError as http_err:
-        raise IOError('Http Error {} - {}'.format(http_err, response.text))
+        raise IOError('{} - {}'.format(http_err, response.text))
