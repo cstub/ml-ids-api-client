@@ -7,7 +7,7 @@ from typing import List
 API_REQUEST_HEADERS = {
     'Content-Type': 'application/json; format=pandas-split'
 }
-API_ENDPOINT_NAME = 'invocations'
+API_ENDPOINT_NAME = '/api/predictions'
 
 
 def call_predict_api(url: str, data: pd.DataFrame) -> List[float]:

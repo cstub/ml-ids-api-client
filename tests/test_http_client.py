@@ -3,10 +3,10 @@ import os
 import responses
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
-from ml_ids_api_client.conf import TEST_DATA_DIR
-from ml_ids_api_client.http_client import call_predict_api
+from tests.conf import TEST_DATA_DIR
+from ml_ids_api_client.http.http_client import call_predict_api
 
-ML_IDS_URL = 'http://api.ml-ids.com/invocations'
+ML_IDS_URL = 'http://api.ml-ids.com/api/predictions'
 
 
 @pytest.fixture

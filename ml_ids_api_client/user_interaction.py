@@ -1,5 +1,6 @@
 import click
 import pandas as pd
+import shutil
 from tabulate import tabulate
 from ml_ids_api_client.data import Selection, RandomSelection
 from typing import Dict, Union, Optional, Callable
@@ -7,8 +8,10 @@ from typing import Dict, Union, Optional, Callable
 QUIT_CHAR = 'q'
 RANDOM_CHAR = 'r'
 
+cols, _ = shutil.get_terminal_size()
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 1000)
+pd.set_option('display.width', cols)
 
 
 def prompt_for_selection(categories: Dict[int, str]) -> Optional[Union[Selection, RandomSelection]]:
@@ -102,8 +105,12 @@ def show_prediction_results(result_df: pd.DataFrame, accuracy: float, display_ov
     click.echo('Accuracy: {:.2f}%'.format(accuracy))
     click.echo('\nDetails:')
     click.echo('--------')
-    if display_overflow == 'WRAP':
-        click.echo(result_df.reset_index(drop=True))
-    else:
-        click.echo(tabulate(result_df, headers='keys', showindex=False))
+    print_dataframe(result_df, display_overflow)
     click.echo()
+
+
+def print_dataframe(df: pd.DataFrame, display_overflow: str) -> None:
+    if display_overflow == 'WRAP':
+        click.echo(df.reset_index(drop=True))
+    else:
+        click.echo(tabulate(df, headers='keys', showindex=False))

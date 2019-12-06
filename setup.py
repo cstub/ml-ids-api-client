@@ -19,7 +19,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ml_ids_rest_client=ml_ids_api_client.rest_client:run_client'
+            'ml_ids_rest_client=ml_ids_api_client.producer.rest_client:run_client',
+            'ml_ids_attack_consumer=ml_ids_api_client.consumer.attack_notification_consumer:run_cli'
         ]
     }
 )

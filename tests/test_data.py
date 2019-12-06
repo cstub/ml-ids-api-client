@@ -1,7 +1,7 @@
 import pytest
 import os
 import pandas as pd
-from ml_ids_api_client.conf import TEST_DATA_DIR
+from tests.conf import TEST_DATA_DIR
 from ml_ids_api_client.data import get_categories, select_samples, Selection, RandomSelection
 
 SAMPLE_COUNT = 100
