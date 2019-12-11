@@ -1,10 +1,14 @@
+"""
+CLI to consume attack notifications published by the the ML-IDS API (https://github.com/cstub/ml-ids-api)
+"""
+from typing import Optional
+from collections import namedtuple
 import logging
-import pandas as pd
-
-import click
 import json
 
-from collections import namedtuple
+import pandas as pd
+import click
+
 from ml_ids_api_client.aws.sqs_consumer import AwsSQSConsumer
 from ml_ids_api_client.user_interaction import print_dataframe
 
@@ -13,7 +17,13 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(asctime)s: %(me
 AttackNotification = namedtuple('AttackNotification', ['msg_id', 'network_flow'])
 
 
-def deserialize_message(message):
+def deserialize_message(message: dict) -> Optional[AttackNotification]:
+    """
+    Deserializes a SQS message into an instance of `AttackNotification`.
+
+    :param message: SQS message.
+    :return: `AttackNotification` if the message could be deserialized successfully, else None.
+    """
     try:
         msg_id = message['MessageId']
         msg_body = json.loads(message['Body'])
@@ -22,14 +32,21 @@ def deserialize_message(message):
         network_flow = pd.read_json(msg_content, orient='split')
         return AttackNotification(msg_id, network_flow)
     except KeyError as err:
-        logging.warning("Message [{}] could not be parsed. Cause: {}".format(message, err))
+        logging.warning("Message [%s] could not be parsed. Cause: %s", message, err)
     except ValueError as err:
-        logging.warning('Message content [{}] could not be parsed. Message does not adhere to Pandas-split format. '
-                        'Cause {}'.format(msg_content, err))
+        logging.warning('Message content [%s] could not be parsed. Message does not adhere to Pandas-split format. '
+                        'Cause %s', msg_content, err)
     return None
 
 
-def print_attack_notification(attack_notification, display_overflow):
+def print_attack_notification(attack_notification: AttackNotification, display_overflow: str) -> None:
+    """
+    Displays the details of an attack notification to the user.
+
+    :param attack_notification: AttackNotification.
+    :param display_overflow: Overflow behaviour if the output exceeds the window width.
+    :return: None.
+    """
     print('Attack detected [{}]'.format(attack_notification.msg_id))
     print('Network Flow:\n')
     print_dataframe(attack_notification.network_flow, display_overflow)
@@ -65,6 +82,9 @@ def run_cli(access_key,
             wait_time,
             visibility_timeout,
             display_overflow):
+    """
+    Runs the CLI.
+    """
     sqs_consumer = AwsSQSConsumer(access_key, secret_key, region)
 
     while True:
@@ -80,4 +100,5 @@ def run_cli(access_key,
 
 
 if __name__ == '__main__':
+    # pylint: disable=no-value-for-parameter
     run_cli()

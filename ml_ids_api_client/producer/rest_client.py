@@ -1,5 +1,8 @@
-import click
+"""
+REST Client CLI to submit prediction requests to the ML-IDS API (https://github.com/cstub/ml-ids-api)
+"""
 from time import sleep
+import click
 
 from ml_ids_api_client.dataset import load_dataset
 from ml_ids_api_client.data import get_categories, select_samples, merge_predictions
@@ -19,6 +22,9 @@ from ml_ids_api_client.http.http_client import call_predict_api
 @click.option('--display-overflow', type=click.Choice(['WRAP', 'NOWRAP'], case_sensitive=False),
               default='WRAP', help='Defines the overflow behaviour if the output exceeds the window width.')
 def run_client(dataset_uri, api_url, s3_region, s3_local_storage_path, display_overflow):
+    """
+    Runs the CLI.
+    """
     click.echo('Loading dataset...')
     dataset = load_dataset(dataset_uri, s3_region, s3_local_storage_path)
     categories = get_categories(dataset)
@@ -48,4 +54,5 @@ def run_client(dataset_uri, api_url, s3_region, s3_local_storage_path, display_o
 
 
 if __name__ == '__main__':
+    # pylint: disable=no-value-for-parameter
     run_client()

@@ -1,0 +1,35 @@
+name: Build Branch
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install dependencies
+      run: |
+        conda env create --file environment.yml
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api-client
+        pip install -e .
+
+    - name: Static Type Check
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api-client
+        make typecheck
+
+    - name: Code Quality Check
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api-client
+        make lint-errors
+
+    - name: Test with pytest
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ml-ids-api-client
+        make test

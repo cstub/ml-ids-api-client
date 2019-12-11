@@ -1,8 +1,11 @@
+"""
+HTTP utilities to invoke the `predict` endpoint of the ML-IDS API.
+"""
+from typing import List
+import urllib.parse
 import pandas as pd
 import requests
-import urllib.parse
 from requests.exceptions import HTTPError
-from typing import List
 
 API_REQUEST_HEADERS = {
     'Content-Type': 'application/json; format=pandas-split'
@@ -11,6 +14,13 @@ API_ENDPOINT_NAME = '/api/predictions'
 
 
 def call_predict_api(url: str, data: pd.DataFrame) -> List[float]:
+    """
+    Invokes the `predict` endpoint of the ML-IDS API.
+
+    :param url: URL of the API.
+    :param data: Features to send in request body.
+    :return: List of predictions in the range of `[0, 1]`. Returns one prediction per input row in the same order.
+    """
     json_body = data.drop(columns=['label']).to_json(orient='split', index=False)
 
     try:
